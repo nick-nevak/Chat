@@ -1,0 +1,30 @@
+<div class="d-flex justify-content-center">
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">Please, create account</h5>
+
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                <mat-form-field appearance="fill">
+                    <mat-label>Email</mat-label>
+                    <input matInput formControlName="login">
+                    <mat-error *ngIf="login.hasError('required')">
+                        Field is required
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                    <mat-label>Password</mat-label>
+                    <input matInput formControlName="password" type="password">
+                    <mat-error *ngIf="password.hasError('required')">
+                        Field is required
+                    </mat-error>
+                </mat-form-field>
+
+                <div class="mt-3">
+                    <button mat-flat-button color="primary" type="submit">Create</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
