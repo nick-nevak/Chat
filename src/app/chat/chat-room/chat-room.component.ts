@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
+import { SignalrService } from '../services/signalr/signalr.service';
+import { tap } from 'rxjs/operators'
+import { Message } from '../models/message';
 
 @Component({
   selector: 'app-chat-room',
@@ -8,53 +11,47 @@ import * as signalR from '@microsoft/signalr';
 })
 export class ChatRoomComponent implements OnInit {
 
-  connection: signalR.HubConnection;
+  newMessage: string;
 
-  constructor() { }
+  private divMessages: HTMLDivElement;
+  private tbMessage: HTMLInputElement;
+
+  constructor(private signalrService: SignalrService) { }
 
   ngOnInit(): void {
-    this.listen();
+    this.signalrService.startConnection();
+    this.selectHTMLElements();
+    this.signalrService.onNewMessage$
+      .pipe(
+        tap(m => this.createNewMessage(m))
+      ).subscribe();
   }
 
-  listen() {
+  selectHTMLElements(){
+    this.divMessages = document.querySelector("#divMessages");
+    this.tbMessage = document.querySelector("#tbMessage");
+  }
 
-    const divMessages: HTMLDivElement = document.querySelector("#divMessages");
-    const tbMessage: HTMLInputElement = document.querySelector("#tbMessage");
-    const btnSend: HTMLButtonElement = document.querySelector("#btnSend");
-    const username = new Date().getTime();
+  onEnter(value: string) {
+    this.sendMessage();
+  }
 
-    const connection = new signalR.HubConnectionBuilder()
-      .withUrl("https://localhost:44321/chatHub")
-      .build();
+  createNewMessage(message: Message){
+    let messages = document.createElement("div");
+    messages.innerHTML =
+      `<div class="message-author">${message.username}</div><div>${message.messageContent}</div>`;
+    this.divMessages.appendChild(messages);
+    this.divMessages.scrollTop = this.divMessages.scrollHeight;
+  }
 
-    connection.on("ReceiveMessage", (username: string, message: string) => {
-      debugger;
-      let messages = document.createElement("div");
-
-      messages.innerHTML =
-        `<div class="message-author">${username}</div><div>${message}</div>`;
-
-      divMessages.appendChild(messages);
-      divMessages.scrollTop = divMessages.scrollHeight;
-    });
-
-    connection.start()
-        .then(_ => console.log('connected!'))
-        .catch(err => document.write(err));
-
-    tbMessage.addEventListener("keyup", (e: KeyboardEvent) => {
-      if (e.key === "Enter") {
-        send();
-      }
-    });
-
-    btnSend.addEventListener("click", send);
-
-    function send() {
-      debugger;
-      connection.invoke("SendMessage", `${username}`, tbMessage.value)
-        .then(() => tbMessage.value = "");
+  async sendMessage(){
+    const message = {
+      username: new Date().getTime().toString(),
+      messageContent: this.tbMessage.value
     }
+    await this.signalrService.sendMessage(message);
+    console.log('message sent', message);
+    this.tbMessage.value = '';
   }
 
 }
