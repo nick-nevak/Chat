@@ -14,7 +14,6 @@ export class ChatRoomComponent implements OnInit {
   newMessage: string;
 
   private divMessages: HTMLDivElement;
-  private tbMessage: HTMLInputElement;
 
   constructor(private signalrService: SignalrService) { }
 
@@ -29,7 +28,6 @@ export class ChatRoomComponent implements OnInit {
 
   selectHTMLElements(){
     this.divMessages = document.querySelector("#divMessages");
-    this.tbMessage = document.querySelector("#tbMessage");
   }
 
   onEnter(value: string) {
@@ -47,11 +45,11 @@ export class ChatRoomComponent implements OnInit {
   async sendMessage(){
     const message = {
       username: new Date().getTime().toString(),
-      messageContent: this.tbMessage.value
+      messageContent: this.newMessage
     }
     await this.signalrService.sendMessage(message);
     console.log('message sent', message);
-    this.tbMessage.value = '';
+    this.newMessage = '';
   }
 
 }
