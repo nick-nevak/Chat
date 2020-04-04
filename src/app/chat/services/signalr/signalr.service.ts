@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { Subject } from 'rxjs';
 import { Message } from '../../models/message';
+import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
 
 export const serverUrl = "https://localhost:44321/chatHub";
 
@@ -12,14 +13,21 @@ export class SignalrService {
 
   onNewMessage$: Subject<Message> = new Subject<Message>();
 
-  private connection: signalR.HubConnection;
+  private connection: HubConnection;
   private chanelName = 'ReceiveMessage';
   private methodName = 'SendMessage';
 
   constructor() { }
 
   startConnection() {
-    this.connection = new signalR.HubConnectionBuilder()
+    if (this.connection &&
+      (this.connection.state === HubConnectionState.Connected
+        || this.connection.state === HubConnectionState.Connecting
+        || this.connection.state === HubConnectionState.Reconnecting)) {
+      return;
+    }
+
+    this.connection = new HubConnectionBuilder()
       .withUrl(serverUrl)
       .build();
 
