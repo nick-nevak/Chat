@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginModule } from './login/login.module';
 import { MaterialModule } from './material/material.module';
 import { CreateAccountModule } from './create-account/create-account.module';
+import { ChatModule } from './chat/chat.module';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { CreateAccountModule } from './create-account/create-account.module';
   imports: [
     LoginModule,
     CreateAccountModule,
+    ChatModule,
     MaterialModule,
     BrowserModule,
     AppRoutingModule,
