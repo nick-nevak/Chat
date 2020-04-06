@@ -28,13 +28,13 @@ export class LoginComponent implements OnInit {
       email: this.login.value,
       password: this.password.value
     };
-    this.authService.login(user).subscribe();
+    this.authService.loginMock(user.email).subscribe();
   }
 
   private createForm(): void {
     this.loginForm = this.fb.group({
        login: ['', Validators.required],
-       password: ['', Validators.required],
+       password: [''],
     });
  }
 

@@ -1,19 +1,29 @@
-<div>
-  App works
-</div>
-<div>
-  <a routerLink="/login" routerLinkActive="active">login</a>
-</div>
-<div>
-  <a routerLink="/create-account" routerLinkActive="active">create-account</a>
-</div>
-<div>
-  <a routerLink="/user-list" routerLinkActive="active">user-list</a>
-</div>
-<div>
-  <a routerLink="/chat-list" routerLinkActive="active">chat-list</a>
-</div>
-<div>
-  <a routerLink="/chat-room" routerLinkActive="active">chat-room</a>
-</div>
+<mat-toolbar color="primary">
+  <span>Chat Application</span>
+
+  
+  <button mat-button [matMenuTriggerFor]="menu" class="float-right">
+    Menu
+  </button>
+
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item routerLink="/login" routerLinkActive="active">
+      login
+    </button>
+    <button mat-menu-item routerLink="/chat-room" routerLinkActive="active">
+      chat-room
+    </button>
+    <button mat-menu-item routerLink="/create-account" routerLinkActive="active">
+      create-account
+    </button>
+    <button mat-menu-item routerLink="/user-list" routerLinkActive="active">
+      user-list
+    </button>
+    <button mat-menu-item routerLink="/chat-list" routerLinkActive="active">
+      chat-list
+    </button>
+  </mat-menu>
+
+</mat-toolbar>
+
 <router-outlet></router-outlet>

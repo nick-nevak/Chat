@@ -1,16 +1,21 @@
-<p>chat-room works!</p>
-<div id="divMessages" class="messages">
-</div>
-<div class="input-zone">
-    <label id="lblMessage" for="tbMessage">Message:</label>
-    <input id="tbMessage" 
-           class="input-zone-input" 
-           type="text"
-           #box
-           [(ngModel)]="newMessage"
-           (keyup.enter)="onEnter(box.value)" />
-    <button id="btnSend"
-            (click)="sendMessage()">
-            Send
-    </button>
+<div class="mx-4">
+    <div>
+        Your name is: {{username}}
+    </div>
+    <div class="messages-container"
+         #messagesContainer>
+        <app-message *ngFor="let message of messages"
+                     [message]="message">
+        </app-message>
+    </div>
+    <div class="mx-2">
+        <mat-form-field appearance="outline"
+                        class="w-100"
+                        >
+            <input matInput 
+                   placeholder="Type message"
+                   [(ngModel)]="newMessage"
+                   (keyup.enter)="onEnter(newMessage)">
+        </mat-form-field>
+    </div>
 </div>

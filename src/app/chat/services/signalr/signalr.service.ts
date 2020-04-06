@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import * as signalR from '@microsoft/signalr';
 import { Subject } from 'rxjs';
 import { Message } from '../../models/message';
 import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';

@@ -5,20 +5,29 @@ import { CreateAccountComponent } from './create-account/create-account/create-a
 import { ChatListComponent } from './chat/chat-list/chat-list.component';
 import { UserListComponent } from './user-list/user-list/user-list.component';
 import { ChatRoomComponent } from './chat/chat-room/chat-room.component';
+import { AuthGuard } from './core/auth/auth.guard';
 
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
   { path: 'create-account', component: CreateAccountComponent },
   { path: 'chat-list', component: ChatListComponent },
   { path: 'chat-room', component: ChatRoomComponent },
   { path: 'user-list', component: UserListComponent },
-  { path: '',   redirectTo: '/login', pathMatch: 'full' }
+  { path: '',   redirectTo: '/chat-room', pathMatch: 'full' }
   // { path: '**', component: PageNotFoundComponent }
 ];
 
+const protectedRoutes: Routes = [
+  { path: 'login', component: LoginComponent },
+  {
+    path: '', 
+    canActivateChild: [AuthGuard],
+    children: routes
+  }
+]
+
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(protectedRoutes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

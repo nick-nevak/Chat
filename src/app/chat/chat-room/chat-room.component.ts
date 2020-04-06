@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { SignalrService } from '../services/signalr/signalr.service';
 import { tap } from 'rxjs/operators'
 import { Message } from '../models/message';
+import { AuthService } from 'src/app/core/auth/auth.service';
 
 @Component({
   selector: 'app-chat-room',
@@ -11,40 +12,41 @@ import { Message } from '../models/message';
 })
 export class ChatRoomComponent implements OnInit {
 
-  newMessage: string;
+  get username(): string { return this.authService.username; }
 
-  private divMessages: HTMLDivElement;
+  newMessage: string = '';
+  messages: Message[] = [];
 
-  constructor(private signalrService: SignalrService) { }
+  @ViewChild('messagesContainer') messagesContainer: ElementRef;
+
+  constructor(private signalrService: SignalrService,
+              private authService: AuthService) { }
 
   ngOnInit(): void {
     this.signalrService.startConnection();
-    this.selectHTMLElements();
     this.signalrService.onNewMessage$
       .pipe(
-        tap(m => this.createNewMessage(m))
+        tap(m => this.appendNewMessage(m))
       ).subscribe();
-  }
-
-  selectHTMLElements(){
-    this.divMessages = document.querySelector("#divMessages");
   }
 
   onEnter(value: string) {
     this.sendMessage();
   }
 
-  createNewMessage(message: Message){
-    let messages = document.createElement("div");
-    messages.innerHTML =
-      `<div class="message-author">${message.username}</div><div>${message.messageContent}</div>`;
-    this.divMessages.appendChild(messages);
-    this.divMessages.scrollTop = this.divMessages.scrollHeight;
+  appendNewMessage(message: Message) {
+    console.log('container:', this.messagesContainer.nativeElement);
+    debugger;
+    this.messages.push(message);
+    setTimeout(() => {
+      const scrollHeight = this.messagesContainer.nativeElement.scrollHeight;
+      this.messagesContainer.nativeElement.scrollTop = scrollHeight;
+    }, 10);
   }
 
   async sendMessage(){
     const message = {
-      username: new Date().getTime().toString(),
+      username: this.authService.username,
       messageContent: this.newMessage
     }
     await this.signalrService.sendMessage(message);
